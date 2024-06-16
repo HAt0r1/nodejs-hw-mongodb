@@ -1,13 +1,9 @@
 import mongoose from 'mongoose';
-
-import { env } from '../utils/env.js';
+import constData from '../constans/mongoInfo.js';
 
 const initMongoConnection = async () => {
   try {
-    const user = env('MONGODB_USER');
-    const password = env('MONGODB_PASSWORD');
-    const url = env('MONGODB_URL');
-    const db = env('MONGODB_DB');
+    const { user, password, url, db } = constData();
     await mongoose.connect(
       `mongodb+srv://${user}:${password}@${url}/${db}?retryWrites=true&w=majority&appName=hw2-mongodb`,
     );
