@@ -5,7 +5,7 @@ const initMongoConnection = async () => {
   try {
     const { user, password, url, db } = constData();
     await mongoose.connect(
-      `mongodb+srv://${user}:${password}@${url}/${db}?retryWrites=true&w=majority`,
+      `mongodb+srv://${user}:${password}@${url}/${db}?retryWrites=true&w=majority&appName=hw2-mongodb`,
     );
     console.log('Mongo connection successfully established!');
   } catch (error) {
