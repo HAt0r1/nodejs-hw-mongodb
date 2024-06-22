@@ -1,6 +1,11 @@
 import createHttpError from 'http-errors';
-import { getAllContacts, getContactById } from '../services/contacts.js';
+import {
+  getAllContacts,
+  getContactById,
+  createContact,
+} from '../services/contacts.js';
 
+// GET Controllers
 export const getAllContactsController = async (req, res, next) => {
   const contacts = await getAllContacts();
 
@@ -28,6 +33,23 @@ export const getContactByIdController = async (req, res, next) => {
   res.status(200).json({
     status: res.statusCode,
     message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
+};
+
+// POST Controller
+
+export const createContactController = async (req, res, next) => {
+  const contact = await createContact(req.body);
+
+  if (!contact) {
+    next(createHttpError(404, 'Can not create contact. Check your data'));
+    return;
+  }
+
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
     data: contact,
   });
 };
