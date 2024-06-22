@@ -39,7 +39,7 @@ export const getContactByIdController = async (req, res, next) => {
 
 // POST Controller
 
-export const createContactController = async (req, res, next) => {
+export const postContactController = async (req, res, next) => {
   const contact = await createContact(req.body);
 
   if (!contact) {
