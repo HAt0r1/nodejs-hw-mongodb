@@ -6,10 +6,12 @@ import {
   patchContact,
   deleteContact,
 } from '../services/contacts.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
 // GET Controllers
 export const getAllContactsController = async (req, res, next) => {
-  const contacts = await getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const contacts = await getAllContacts({ page, perPage });
 
   if (!contacts) {
     next(createHttpError(404, 'Contacts not found'));
