@@ -12,6 +12,7 @@ import {
   updateStudentSchema,
 } from '../validation/contacts.js';
 import { validateBody } from '../utils/validationBody.js';
+import { validateId } from '../middlewares/validateId.js';
 
 const router = express.Router();
 
@@ -23,14 +24,23 @@ router.post(
   ctrlWrapper(postContactController),
 );
 
-router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
+router.get(
+  '/contacts/:contactId',
+  validateId,
+  ctrlWrapper(getContactByIdController),
+);
 
 router.patch(
   '/contacts/:contactId',
+  validateId,
   validateBody(updateStudentSchema),
   ctrlWrapper(patchContactController),
 );
 
-router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
+router.delete(
+  '/contacts/:contactId',
+  validateId,
+  ctrlWrapper(deleteContactController),
+);
 
 export default router;
