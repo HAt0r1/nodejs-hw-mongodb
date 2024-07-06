@@ -31,3 +31,7 @@ export const createSession = async (userId) => {
     refreshTokenValid,
   });
 };
+
+export const logoutUser = (userId) => {
+  Session.deleteOne({ _id: userId });
+};
