@@ -1,6 +1,11 @@
 import createHttpError from 'http-errors';
 
-import { userFilter, registration, createSession } from '../services/auth.js';
+import {
+  userFilter,
+  registration,
+  createSession,
+  logoutUser,
+} from '../services/auth.js';
 import { comparePassword } from '../utils/comparePassword.js';
 
 export const registrationUserController = async (req, res, next) => {
@@ -57,4 +62,15 @@ export const loginUserController = async (req, res, next) => {
     message: 'Successfully logged in an user!',
     data: sessionData.accessToken,
   });
+};
+
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
+
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 };
