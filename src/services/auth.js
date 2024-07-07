@@ -9,6 +9,8 @@ import {
 
 export const userFilter = (filter) => User.findOne(filter);
 
+export const sessionFilter = (filter) => Session.findOne(filter);
+
 export const registration = async (payload) => {
   const { password } = payload;
   const encryptPassword = await bcrypt.hash(password, 10);
@@ -32,6 +34,11 @@ export const createSession = async (userId) => {
   });
 };
 
-export const logoutUser = (userId) => {
-  Session.deleteOne({ _id: userId });
+export const refreshSession = async (userId) => {
+  const newSession = await createSession(userId);
+  return newSession;
+};
+
+export const logoutUser = (sessionId) => {
+  return Session.deleteOne({ _id: sessionId });
 };
