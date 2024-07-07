@@ -1,4 +1,5 @@
 import express from 'express';
+import authenticate from '../middlewares/authenticate.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   getAllContactsController,
@@ -15,6 +16,8 @@ import { validateBody } from '../utils/validationBody.js';
 import { validateId } from '../middlewares/validateId.js';
 
 const router = express.Router();
+
+router.use(authenticate);
 
 router.get('/', ctrlWrapper(getAllContactsController));
 
