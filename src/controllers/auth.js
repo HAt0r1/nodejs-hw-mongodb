@@ -5,6 +5,8 @@ import {
   registration,
   createSession,
   logoutUser,
+  sessionFilter,
+  refreshSession,
 } from '../services/auth.js';
 import { comparePassword } from '../utils/comparePassword.js';
 
@@ -52,7 +54,7 @@ export const loginUserController = async (req, res, next) => {
     expires: sessionData.refreshTokenValid,
   });
 
-  res.cookie('sessionId', sessionData.userId, {
+  res.cookie('sessionId', sessionData._id, {
     httpOnly: true,
     expires: sessionData.refreshTokenValid,
   });
@@ -61,6 +63,39 @@ export const loginUserController = async (req, res, next) => {
     status: 200,
     message: 'Successfully logged in an user!',
     data: sessionData.accessToken,
+  });
+};
+
+export const refreshSessionController = async (req, res, next) => {
+  const { sessionId, refreshToken } = req.cookies;
+  const session = await sessionFilter({ _id: sessionId, refreshToken });
+  if (!session) {
+    return next(401, 'Session with current id not found');
+  }
+
+  const validToken = new Date() > new Date(session.refreshTokenValid);
+  if (validToken) {
+    return next(401, 'Current token expired');
+  }
+
+  const newSession = await refreshSession(session.userId);
+
+  res.cookie('refreshToken', newSession.refreshToken, {
+    httpOnly: true,
+    expires: newSession.refreshTokenValid,
+  });
+
+  res.cookie('sessionId', newSession._id, {
+    httpOnly: true,
+    expires: newSession.refreshTokenValid,
+  });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: newSession.accessToken,
+    },
   });
 };
 
