@@ -3,10 +3,10 @@ import { registrationValidation, loginValidation } from '../validation/auth.js';
 import { validateBody } from '../utils/validationBody.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
+  refreshSessionController,
   registrationUserController,
   loginUserController,
   logoutUserController,
-  refreshSessionController,
 } from '../controllers/auth.js';
 
 const router = express.Router();
