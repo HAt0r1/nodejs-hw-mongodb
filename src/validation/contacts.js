@@ -6,7 +6,6 @@ export const createStudentSchema = Joi.object({
   email: Joi.string().min(3).max(20),
   isFavourite: Joi.boolean(),
   contactType: Joi.string().min(3).max(20).valid('personal', 'work', 'home'),
-  userId: Joi.string().required(),
 });
 
 export const updateStudentSchema = Joi.object({
