@@ -1,7 +1,8 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import contactsRouter from './routes/contacts.js';
+import router from './routes/index.js';
+import cookieParser from 'cookie-parser';
 
 import { env } from './utils/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -20,13 +21,15 @@ const setupServer = () => {
 
   app.use(cors());
 
+  app.use(cookieParser());
+
   app.use(
     pino({
       transport: { target: 'pino-pretty' },
     }),
   );
 
-  app.use(contactsRouter);
+  app.use(router);
 
   app.use('*', notFoundHandler);
 

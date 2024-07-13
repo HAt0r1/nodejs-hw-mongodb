@@ -1,4 +1,5 @@
 import express from 'express';
+import { authenticate } from '../middlewares/authenticate.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   getAllContactsController,
@@ -16,31 +17,25 @@ import { validateId } from '../middlewares/validateId.js';
 
 const router = express.Router();
 
-router.get('/contacts', ctrlWrapper(getAllContactsController));
+router.use(authenticate);
+
+router.get('/', ctrlWrapper(getAllContactsController));
 
 router.post(
-  '/contacts',
+  '/',
   validateBody(createStudentSchema),
   ctrlWrapper(postContactController),
 );
 
-router.get(
-  '/contacts/:contactId',
-  validateId,
-  ctrlWrapper(getContactByIdController),
-);
+router.get('/:contactId', validateId, ctrlWrapper(getContactByIdController));
 
 router.patch(
-  '/contacts/:contactId',
+  '/:contactId',
   validateId,
   validateBody(updateStudentSchema),
   ctrlWrapper(patchContactController),
 );
 
-router.delete(
-  '/contacts/:contactId',
-  validateId,
-  ctrlWrapper(deleteContactController),
-);
+router.delete('/:contactId', validateId, ctrlWrapper(deleteContactController));
 
 export default router;
