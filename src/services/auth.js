@@ -1,12 +1,19 @@
 import createHttpError from 'http-errors';
 import User from '../db/model/User.js';
 import Session from '../db/model/Session.js';
-import { randomBytes } from 'node:crypto';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import handlebars from 'handlebars';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { env } from '../utils/env.js';
+import { randomBytes } from 'node:crypto';
 import {
   TIMELINE_ACCESS_TOKEN,
   TIMELINE_REFRESH_TOKEN,
 } from '../constans/sessionParams.js';
+import { sendEmail } from '../utils/resetWithEmail.js';
+import { TEMPLATES } from '../constans/links.js';
 
 const userFilter = (filter) => User.findOne(filter);
 
@@ -86,4 +93,49 @@ export const refresh = async ({ sessionId, refreshToken }) => {
     userId: session.userId,
     ...newSession,
   });
+};
+
+export const resetWithEmail = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found!');
+  }
+  const resetToken = jwt.sign({ sub: user._id, email }, env('JWT_SECRET'), {
+    expiresIn: '5min',
+  });
+  const templatePath = path.join(TEMPLATES, 'reset-password-email.html');
+
+  const templateContent = (await fs.readFile(templatePath)).toString();
+
+  const template = handlebars.compile(templateContent);
+
+  const html = template({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
+  await sendEmail({
+    from: env('SMTP_FROM'),
+    to: email,
+    subject: 'Reset current password',
+    html,
+  });
+};
+
+export const resetPassword = async ({ token, password }) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(token, env('JWT_SECRET'));
+  } catch (error) {
+    throw createHttpError(401, 'Token is expired or invalid.');
+  }
+
+  const user = await User.findOne({ _id: entries.sub, email: entries.email });
+  if (!user) {
+    throw createHttpError(404, 'User not found!');
+  }
+
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  await User.updateOne({ _id: user.id }, { password: hashPassword });
 };
