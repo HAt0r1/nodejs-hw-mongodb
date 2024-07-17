@@ -3,6 +3,9 @@ import { contactType } from '../../constans/dbSchemaParams.js';
 
 const contactSchema = new Schema(
   {
+    photo: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,
