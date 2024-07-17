@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+import setFileToCloudinary from '../utils/cloudinary.js';
 import {
   getAllContacts,
   getContactById,
@@ -57,7 +58,10 @@ export const getContactByIdController = async (req, res, next) => {
 // POST Controller
 
 export const postContactController = async (req, res, next) => {
-  const contact = await createContact(req.body);
+  const photo = req.file;
+  let photoUrl;
+  if (photo) photoUrl = await setFileToCloudinary(photo);
+  const contact = await createContact({ ...req.body, photo: photoUrl });
 
   if (!contact) {
     next(createHttpError(404, 'Can not create contact. Check your data'));
@@ -75,7 +79,14 @@ export const postContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await patchContact(contactId, req.body);
+  const photo = req.file;
+  let photoUrl;
+  if (photo) photoUrl = await setFileToCloudinary(photo);
+
+  const contact = await patchContact({
+    contactId,
+    payload: { ...req.body, photo: photoUrl },
+  });
 
   if (!contact) {
     next(createHttpError(404, 'Contact not found'));
