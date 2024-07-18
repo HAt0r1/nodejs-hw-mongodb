@@ -80,12 +80,14 @@ export const postContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
+  const userId = req.user._id;
   const photo = req.file;
   let photoUrl;
   if (photo) photoUrl = await setFileToCloudinary(photo);
 
   const contact = await patchContact({
     contactId,
+    userId,
     payload: { ...req.body, photo: photoUrl },
   });
 
