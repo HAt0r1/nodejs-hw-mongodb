@@ -16,7 +16,6 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
-      required: false,
     },
     isFavourite: {
       type: Boolean,
@@ -32,6 +31,7 @@ const contactSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'users',
+      required: true,
     },
   },
   {
