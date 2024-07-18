@@ -1,4 +1,5 @@
 import express from 'express';
+import upload from '../utils/multerConfig.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
@@ -23,6 +24,7 @@ router.get('/', ctrlWrapper(getAllContactsController));
 
 router.post(
   '/',
+  upload.single('photo'),
   validateBody(createStudentSchema),
   ctrlWrapper(postContactController),
 );
@@ -32,6 +34,7 @@ router.get('/:contactId', validateId, ctrlWrapper(getContactByIdController));
 router.patch(
   '/:contactId',
   validateId,
+  upload.single('photo'),
   validateBody(updateStudentSchema),
   ctrlWrapper(patchContactController),
 );
