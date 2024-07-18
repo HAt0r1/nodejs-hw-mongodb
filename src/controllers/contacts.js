@@ -58,10 +58,11 @@ export const getContactByIdController = async (req, res, next) => {
 // POST Controller
 
 export const postContactController = async (req, res, next) => {
+  const userId = req.user._id;
   const photo = req.file;
   let photoUrl;
   if (photo) photoUrl = await setFileToCloudinary(photo);
-  const contact = await createContact({ ...req.body, photo: photoUrl });
+  const contact = await createContact({ ...req.body, userId, photo: photoUrl });
 
   if (!contact) {
     next(createHttpError(404, 'Can not create contact. Check your data'));
