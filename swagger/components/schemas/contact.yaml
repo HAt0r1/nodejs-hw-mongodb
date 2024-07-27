@@ -1,0 +1,42 @@
+type: object
+required:
+  - _id
+  - name
+  - phoneNumber
+  - isFavourite
+  - contactType
+  - userId
+properties:
+  _id:
+    description: 'Contact unique identificator'
+    type: string
+    example: '65e4decdd286b30065d54af9'
+  name:
+    description: 'Contact name'
+    type: string
+    example: 'Matthew Benneta'
+  phoneNumber:
+    description: 'Contact number'
+    type: string
+    example: '0631204554'
+  email:
+    description: 'Contact email'
+    type: string
+    example: 'MatthewBenneta@gmail.com'
+  isFavourite:
+    description: 'Is current contact be favourite or not'
+    type: boolean
+    example: true
+  contactType:
+    description: 'Shows which group the current contact belongs to'
+    type: string
+    example: 'personal'
+    enum: ['personal', 'work', 'home']
+  userId:
+    description: 'Shows which user has rights to do some manipulations with contacts'
+    type: string
+    example: '668be55f8a45df4ae2838384'
+  photo:
+    description: 'Link to contact photo'
+    type: string
+    example: 'https://res.cloudinary.com/uqwgdu/image/upload/image.png'

@@ -1,0 +1,60 @@
+tags:
+  - Contacts
+summary: Add contact to list
+operationId: postContacts
+description: Add new contact to list of contacts
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - phoneNumber
+        properties:
+          name:
+            type: string
+            example: 'Matthew Benneta'
+          phoneNumber:
+            type: string
+            example: '0631204554'
+          email:
+            type: string
+            example: 'MatthewBenneta@gmail.com'
+          isFavourite:
+            type: boolean
+            example: true
+          contactType:
+            type: string
+            example: 'personal'
+            enum: ['personal', 'work', 'home']
+          photo:
+            type: string
+            example: 'https://res.cloudinary.com/uqwgdu/image/upload/image.png'
+responses:
+  '201':
+    description: Successfully created a contact!
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: number
+              example: 201
+            message:
+              type: string
+              example: 'Successfully created a contact!'
+            data:
+              type: object
+              $ref: ..\..\components\schemas\contact.yaml
+  '404':
+    $ref: ..\..\components\responces\404.yaml
+  '401':
+    $ref: ..\..\components\responces\401.yaml
